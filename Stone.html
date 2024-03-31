@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en" dir="ltr">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stone Paper Scissor Game</title>
+    <link rel="stylesheet" href="./Stone_Paper_Scissors.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container ">
+            <div class="container computer-choice shadow-sm p-3 mb-5 bg-white rounded">
+             
+                <input id="computer-choosed" class="form-control" placeholder="Compter's choice is..." > 
+            </div>
+            <div class="container user-choice">
+                <input id="user-choosed" class="form-control" placeholder="Yours choice is..." >
+                <div class="container buttons shadow-sm p-3 mb-5 bg-white rounded">
+                <button class="btn btn-primary user-btn " id="stone" value="Stone" disabled>Stone</button>
+                <button class="btn btn-primary user-btn " id="paper" value="Paper" disabled>Paper</button>
+                <button class="btn btn-primary user-btn" id="scissor" value="Scissor" disabled>Scissor</button>
+            </div>
+            </div>
+            <div id="result-container" class="container shadow-sm p-3 mb-5 bg-white rounded row">
+                <input type="button" class="btn btn-success col" id="start" value="Start Game" >
+                <input type="button" class="btn btn-success col" id="finished" style="display:none">
+                <input type="button" class="btn btn-success col" id="try-again" style="display:none" Value="Try again">
+            </div>
+
+           <table style="display: none;" id="table-count" class="table table-bordered">
+            <thead id="thead">
+
+            </thead>
+               <tbody id="tbody">
+
+               </tbody>
+           </table>
+
+        </div>
+    <script>
+const computerChoiceDisplay = document.getElementById("computer-choosed");
+const userChoiceDisplay = document.getElementById("user-choosed");
+const userChoiceButtons = document.querySelectorAll('.user-btn');
+let userChoice;
+let computerChoice;
+let count = 0;
+let noOfTries = 10;
+const startButton = document.getElementById("start");
+let gameStatus;
+let computerPoints =0;
+let userPoints=0;
+startButton.addEventListener('click', (e)=>{
+
+    document.getElementById("stone").disabled = false;
+    document.getElementById("paper").disabled = false;
+    document.getElementById("scissor").disabled = false;
+    document.getElementById("table-count").style.display = 'block';
+    e.target.style.display = "none";
+})
+
+userChoiceButtons.forEach(userChoosed => userChoosed.addEventListener('click',function(e) {
+count ++;
+userChoice = e.target.value;
+userChoiceDisplay.value = userChoice;
+computerChoose();
+
+if(count > noOfTries){
+    document.getElementById("stone").disabled = true;
+    document.getElementById("paper").disabled = true;
+    document.getElementById("scissor").disabled = true;
+}
+
+}))
+function computerChoose(){
+    let randomNumber = Math.floor(Math.random() * userChoiceButtons.length);
+    if(randomNumber == 0){
+        computerChoice = "Stone";
+    }
+    else if(randomNumber == 1){
+        computerChoice = "Paper";
+    }
+    else{
+        computerChoice = "Scissor";
+    }
+    computerChoiceDisplay.value = computerChoice;
+    showResults();
+}
+function showResults(){
+
+    if(userChoice == computerChoice){
+        gameStatus = "It's a draw";
+    }
+    if(userChoice == "Stone" && computerChoice == "Paper" || userChoice =="Paper" && computerChoice == "Scissor" || userChoice == "Scissor" && computerChoice =="Stone"){
+        gameStatus = "You loose";
+    }
+    if(userChoice == "Stone" && computerChoice == "Scissor" || userChoice =="Paper" && computerChoice == "Stone" || userChoice == "Scissor" && computerChoice == "Paper"){
+        gameStatus = "You win";
+    }
+
+if(gameStatus == "It's a draw"){
+    computerPoints++;
+    userPoints++;
+}
+if(gameStatus == "You loose"){
+    computerPoints++;
+}
+if(gameStatus == "You win"){
+    userPoints++;
+}
+let gamePointsHeadings = "<tr><th>Computer Points</th><th>User Points</th><th>No of tries</th><th>Actions</th><th>Current result</th></tr>";
+ let gamePoints = "<tr><td>"+computerPoints+"</td><td>"+userPoints+"</td><td>"+noOfTries+"</td><td><button id='increase-try' class='increase-try'>Increase Tries</button><button id='finish'>Finish</button></td><td>"+gameStatus+"</td></tr>";
+ document.getElementById("thead").innerHTML = gamePointsHeadings;
+ document.getElementById("tbody").innerHTML = gamePoints;
+
+const increase_Try = document.getElementById("increase-try");
+increase_Try.addEventListener('click',() => {
+    noOfTries ++;
+    let gamePointsHeadings = "<tr><th>Computer Points</th><th>User Points</th><th>No of tries</th><th>Actions</th><th>Current result</th></tr>";
+    let gamePoints = "<tr><td>"+computerPoints+"</td><td>"+userPoints+"</td><td>"+noOfTries+"</td><td><button id='increase-try'>Increase Tries</button><button id='finish'>Finish</button></td><td>"+gameStatus+"</td></tr>";
+ document.getElementById("thead").innerHTML = gamePointsHeadings;
+ document.getElementById("tbody").innerHTML = gamePoints; 
+
+ document.getElementById("stone").disabled = false;
+ document.getElementById("paper").disabled = false;
+ document.getElementById("scissor").disabled = false;
+});
+
+const finishGame = document.getElementById('finish');
+const finishedResult = document.getElementById('finished');
+finishGame.addEventListener('click', () => {
+    if(computerPoints == userPoints){
+     finishedResult.value = "Match Draw";
+    }
+    if(computerPoints > userPoints){
+        finishedResult.value = "You loose the Game";
+    }
+    if(computerPoints < userPoints){
+        finishedResult.value = "You Win the Game";
+    }
+    finishedResult.style.display = "block";
+})
+
+//  const print = document.getElementById("print");
+//  print.addEventListener('click', () => {
+//      console.log("Hai");
+//     const original = document.body.innerHTML;
+
+    // document.body.innerHTML = "<html><head></head><body>Na mattum tha irukkena?</body></html>";
+    // console.log(document.body.innerHTML);
+    // window.print();
+    // document.body.innerHTML = original;
+    // console.log(document.body.innerHTML);
+ //})
+}
+if(document.getElementById("tbody").children[0] != undefined){
+    const increase_Try = document.getElementsByClassName("increase-try");
+increase_Try.forEach(increase =>increase.addEventListener('click',() => {
+    noOfTries ++;
+    let gamePointsHeadings = "<tr><th>Computer Points</th><th>User Points</th><th>No of tries</th><th>Actions</th><th>Result</th></tr>";
+    let gamePoints = "<tr><td>"+computerPoints+"</td><td>"+userPoints+"</td><td>"+noOfTries+"</td><td><button id='increase-try'>Increase Tries</button></td><td>"+gameStatus+"</td></tr>";
+ document.getElementById("thead").innerHTML = gamePointsHeadings;
+ document.getElementById("tbody").innerHTML = gamePoints; 
+}));
+}       
+    </script>
+    <script src="./Stone_Paper_Scissors.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
